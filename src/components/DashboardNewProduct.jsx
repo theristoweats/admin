@@ -95,7 +95,7 @@ const DashboardNewProduct = () =>{
 
         try {
 
-            const res = await axios.post('https://files.eats.theristow.com/eats/products/upload', formData, {
+            const res = await axios.post('https://files.theristow.com/eats/products/upload', formData, {
                 headers: {
                   'Content-Type': 'multipart/form-data'
                 }
