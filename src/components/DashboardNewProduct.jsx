@@ -1,4 +1,6 @@
  
+import { useState } from "react";
+import axios from "axios";
 import styled from "styled-components"; 
 
 const DashboardProductsRight = styled.div`
@@ -76,52 +78,84 @@ const InputFile = styled.input `
 `;
 
 const DashboardNewProduct = () =>{
+
+    const [file, setFile] = useState('');
+    const [filename, setFilename] = useState('Choose File');
+    const onChange = e => {
+        setFile(e.target.files[0]);
+        setFilename(e.target.files[0].name);
+    };
+
+    const onSubmit = async e => {
+        e.preventDefault();
+        console.log("Submit");
+        
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+
+            const res = await axios.post('https://files.eats.theristow.com/eats/products/upload', formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data'
+                }
+              });
+
+            console.log(res.data);
+
+        }catch(err){
+            console.log(err);
+        }
+    }
+
     return (<>
         <DashboardProductsRight>
 
             <NewProductAdd>
                 <TextNewProduct>Додаи нов производ</TextNewProduct>
+                
                 <InputEtc>
-                    <SingleInputText>
-                        <TextInput>Слика на производот</TextInput>
-                        <InputFile type="file" placeholder="Јајца и млеко" />
-                    </SingleInputText>
-                    <SingleInputText>
-                        <TextInput>Име на производот <b>(печатно)</b></TextInput>
-                        <Input type="text" placeholder="Јајца и млеко" />
-                    </SingleInputText>
-                    
-                    <SingleInputText>
-                        <TextInput>Име на производот <b>(латиница)</b></TextInput>
-                        <Input type="text" placeholder="Jajca i mleko" />
-                    </SingleInputText>
-                    
-                    <SingleInputText>
-                        <TextInput>Име на производот <b>(латиница, малибукви, празните места заменети со цртка)</b></TextInput>
-                        <Input type="text" placeholder="jajca-i-mleko" />
-                    </SingleInputText> 
-                    
-                    <SingleInputText>
-                        <TextInput>Цена на производот</TextInput>
-                        <Input type="number" placeholder="485" />
-                    </SingleInputText>
+                    <form onSubmit={onSubmit}>
+                        <SingleInputText>
+                            <TextInput>Слика на производот</TextInput>
+                            <InputFile type="file" placeholder="Јајца и млеко" onChange={onChange} />
+                        </SingleInputText>
+                        <SingleInputText>
+                            <TextInput>Име на производот <b>(печатно)</b></TextInput>
+                            <Input type="text" placeholder="Јајца и млеко" />
+                        </SingleInputText>
+                        
+                        <SingleInputText>
+                            <TextInput>Име на производот <b>(латиница)</b></TextInput>
+                            <Input type="text" placeholder="Jajca i mleko" />
+                        </SingleInputText>
+                        
+                        <SingleInputText>
+                            <TextInput>Име на производот <b>(латиница, малибукви, празните места заменети со цртка)</b></TextInput>
+                            <Input type="text" placeholder="jajca-i-mleko" />
+                        </SingleInputText> 
+                        
+                        <SingleInputText>
+                            <TextInput>Цена на производот</TextInput>
+                            <Input type="number" placeholder="485" />
+                        </SingleInputText>
 
-                    <SingleInputText>
-                        <TextInput>Категорија</TextInput>
-                        <select
-                            // value={order}
-                            // onChange={(e) => {
-                            // navigate(getFilterUrl({ order: e.target.value }));
-                            // }}
-                            className="select-pro-bro"
-                        >
-                            <option value="0">Избери категорија</option>
-                            <option value="1">Млеко и млечни производи</option>
-                        </select>
-                    </SingleInputText>
+                        <SingleInputText>
+                            <TextInput>Категорија</TextInput>
+                            <select
+                                // value={order}
+                                // onChange={(e) => {
+                                // navigate(getFilterUrl({ order: e.target.value }));
+                                // }}
+                                className="select-pro-bro"
+                            >
+                                <option value="0">Избери категорија</option>
+                                <option value="1">Млеко и млечни производи</option>
+                            </select>
+                        </SingleInputText>
 
                     <ButtonPublishProdut>Објави</ButtonPublishProdut>
-                    
+                    </form>
 
                     
                 </InputEtc>
