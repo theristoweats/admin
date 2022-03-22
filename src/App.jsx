@@ -41,6 +41,14 @@ function App() {
             element={admin ? <Dashboard page="newproduct"/> : <Navigate to="/login"/>}
         ></Route>
         <Route
+            path="/product/:id"
+            element={admin ? <Dashboard page="product"/> : <Navigate to="/login"/>}
+        ></Route>
+        <Route
+            path="/products/name/:name/pageNumber/:pageNumber/"
+            element={admin ? <Dashboard page="products"/> : <Navigate to="/login"/>}
+        ></Route>
+        <Route
             path="/login"
             element={admin ? <Navigate to="/"/> : <Login />}
         ></Route>

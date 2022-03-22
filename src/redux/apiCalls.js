@@ -42,12 +42,23 @@ export const login = async (dispatch, user) => {
   }
 };
 
-export const getProducts = async (dispatch) => {
+
+export const getProducts =
+  ({
+    pageNumber = '',
+    name = '',
+  }) =>
+  async (dispatch) => {
   dispatch(getProductStart());
   try {
-    const res = await publicRequest.get("/products/admin");
-    dispatch(getProductSuccess(res.data));
+    // const res = await publicRequest.get("/products/admin");
+    const { data } = await publicRequest.get(
+      `/products/admin?pageNumber=${pageNumber}&name=${name}`
+    );
+    console.log(data);
+    dispatch(getProductSuccess(data));
   } catch (err) {
+    console.log(err);
     dispatch(getProductFailure());
   }
 };
@@ -62,14 +73,14 @@ export const deleteProduct = async (id, dispatch) => {
   }
 };
 
-export const updateProduct = async (id, product, dispatch, history) => {
+export const updateProduct = async (id, product, dispatch) => {
   console.log(id);
   dispatch(updateProductStart());
   try {
     // update
     const res = await userRequest.put(`/products/${id}`, product);
     dispatch(updateProductSuccess(res.data));
-    history.push("/products");
+    // history.push("/products");
   } catch (err) {
     dispatch(updateProductFailure());
   }

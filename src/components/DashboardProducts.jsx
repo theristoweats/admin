@@ -4,7 +4,10 @@ import ExampleProducct from "../icons/pepsi.png";
 import MainMoreIcon from "../icons/more.png";
 import ReactPaginate from "react-paginate";
 import "../css/style.css";
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { getProducts } from "../redux/apiCalls";
+import { useEffect, useState } from "react";
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 const DashboardProductsRight = styled.div`
     margin-left:60px;
@@ -150,7 +153,49 @@ const ButtonSearch = styled.button`
     cursor:pointer;
 `;
 
+const ButtonClickMore = styled.button`
+    outline:none;
+    background:transparent;
+    border:none;
+    cursor:pointer;
+`;
+
 const DashboardProducts = () =>{
+    const [searchProduct, setSearchProduct] = useState('');
+
+    const navigate = useNavigate();
+    const {
+        name = 'all',
+        pageNumber = 1, 
+    } = useParams();
+
+    const dispatch = useDispatch();
+    const products = useSelector((state) => state.product.products);
+    const pages = useSelector((state) => state.product.pages);
+
+    useEffect(() => {
+        dispatch( 
+            getProducts({
+              pageNumber,
+              name: name !== 'all' ? name : '',
+            })
+        );  
+    }, [dispatch, name, pageNumber]); 
+
+    const handlePageClick = async (data) => {
+        // setPageNumber(data.selected + 1); 
+        const _page = data.selected + 1;
+        navigate(`/products/name/all/pageNumber/${_page}`);
+        // console.log(data.selected);
+        // scroll to the top
+        //window.scrollTo(0, 0)
+    };
+    
+    const handleClickSearch = () => {
+        if(searchProduct !== '' && searchProduct !== undefined){
+            navigate(`/products/name/${searchProduct}/pageNumber/1`);
+        }
+    };
     return (<> 
         <DashboardProductsRight>
 
@@ -169,62 +214,92 @@ const DashboardProducts = () =>{
                 </InfoTtt> 
 
                 <InputSearchProduct>    
-                    <InputSearch placeholder="Пребарај продукт..."/>
-                    <ButtonSearch>Пребарај</ButtonSearch>
+                    <InputSearch placeholder="Пребарај продукт..." onChange={(e)=>setSearchProduct(e.target.value)}  defaultValue={name !=='all' ? name : '' }/>
+                    <ButtonSearch onClick={handleClickSearch}>Пребарај</ButtonSearch>
                 </InputSearchProduct>
 
                 <LoadProductsHere>
                     <InsideProducts>    
-                        <TableHeader>
+                        {/* <TableHeader>
                             <SingleTableHeader style={{width:"300px", marginRight:"20px"}}>
                                 <TableHeaderText></TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader style={{width:"70%"}}>
+                            <SingleTableHeader style={{width:"90%"}}>
                                 <TableHeaderText>Број</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
+                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
                                 <TableHeaderText>Додадена</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
+                            <SingleTableHeader style={{}}>
                                 <TableHeaderText>Име</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
+                            <SingleTableHeader style={{width:"40%"}}>
                                 <TableHeaderText>Цена</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
+                            <SingleTableHeader style={{width:"30%"}}>
                                 <TableHeaderText></TableHeaderText>
                             </SingleTableHeader> 
-                            <SingleTableHeader>
+                            <SingleTableHeader style={{width:"30%"}}>
                                 <TableHeaderText></TableHeaderText>
                             </SingleTableHeader>  
+                        </TableHeader> */}
+
+                        <TableHeader >
+                            <SingleTableHeader style={{width:"200px", marginRight:"20px"}}>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"80%"}}>
+                                <TableHeaderText>Број</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
+                                <TableHeaderText>Додаден</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"90%"}}>
+                                <TableHeaderText>Име</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"40%"}}>
+                                <TableHeaderText>Цена</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader  style={{width:"30%"}}>  
+                                <TableHeaderText>
+                                </TableHeaderText>
+                            </SingleTableHeader> 
+                            <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
+                                <TableHeaderText>
+                                </TableHeaderText>
+                            </SingleTableHeader>  
                         </TableHeader>
+
+                        {products.map((product) => (
                         <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}>
-                            <SingleTableHeader style={{width:"300px", marginRight:"20px"}}>
-                                <ProductImg src={ExampleProducct}></ProductImg>
+                            <SingleTableHeader style={{width:"200px", marginRight:"20px"}}>
+                                <ProductImg src={product.img}></ProductImg>
                             </SingleTableHeader>
-                            <SingleTableHeader style={{width:"70%"}}>
-                                <TableHeaderText>#14</TableHeaderText>
+                            <SingleTableHeader style={{width:"80%"}}>
+                                <TableHeaderText>{product._id}</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
+                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
                                 <TableHeaderText>23 јуни 2022 во 19:40ч</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
-                                <TableHeaderText>Илија Ристов</TableHeaderText>
+                            <SingleTableHeader style={{width:"90%"}}>
+                                <TableHeaderText>{product.title}</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
-                                <TableHeaderText>451 ден.</TableHeaderText>
+                            <SingleTableHeader style={{width:"40%"}}>
+                                <TableHeaderText>{product.price}ден.</TableHeaderText>
                             </SingleTableHeader>
-                            <SingleTableHeader>
+                            <SingleTableHeader  style={{width:"30%"}}>  
                                 <TableHeaderText>
                                     <ButtonDelete>Избриши</ButtonDelete>
                                 </TableHeaderText>
                             </SingleTableHeader> 
-                            <SingleTableHeader>
+                            <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
                                 <TableHeaderText>
-                                    <MoreIcon src={MainMoreIcon}/> 
+                                    <Link to={`/product/${product._id}`}>
+                                        <MoreIcon src={MainMoreIcon}/> 
+                                    </Link>
                                 </TableHeaderText>
                             </SingleTableHeader>  
                         </TableHeader>
+                        ))}
                         
 
                     </InsideProducts>
@@ -233,11 +308,11 @@ const DashboardProducts = () =>{
                     previousLabel={"<"}
                     nextLabel={">"}
                     breakLabel={"..."}
-                    pageCount={3} 
-                    forcePage={2}
+                    pageCount={pages} 
+                    forcePage={pageNumber-1}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={3}
-                    // onPageChange={handlePageClick}
+                    onPageChange={handlePageClick}
                     containerClassName={"pagination justify-content-center"}
                     pageClassName={"page-item"}
                     pageLinkClassName={"page-link"}

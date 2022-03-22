@@ -6,6 +6,8 @@ export const productSlice = createSlice({
     products: [],
     isFetching: false,
     error: false,
+    pages: 0,
+    totalProducts: 0,
   },
   reducers: {
     //GET ALL
@@ -15,7 +17,9 @@ export const productSlice = createSlice({
     },
     getProductSuccess: (state, action) => {
       state.isFetching = false;
-      state.products = action.payload;
+      state.products = action.payload.products;
+      state.totalProducts = action.payload.totalproducts;
+      state.pages = action.payload.pages;
     },
     getProductFailure: (state) => {
       state.isFetching = false;
