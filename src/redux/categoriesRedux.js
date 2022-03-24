@@ -14,7 +14,7 @@ export const CategorySlice = createSlice({
     },
     getCategorySuccess: (state, action) => {
       state.isFetching = false;
-      state.category = action.payload;
+      state.categories = action.payload;
     },
     getCategoryFailure: (state) => {
       state.isFetching = false;

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components"; 
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 const DashboardProductsRight = styled.div`
     margin-left:60px;
@@ -81,6 +82,7 @@ const InputFile = styled.input `
 `;
 
 const DashboardNewProduct = () =>{
+    const navigate = useNavigate();
     
     const dispatch = useDispatch();
     
@@ -105,12 +107,12 @@ const DashboardNewProduct = () =>{
         });
     };
     
-    const [file, setFile] = useState('');
-    const [filename, setFilename] = useState('Choose File');
+    const [file, setFile] = useState();
+    // const [filename, setFilename] = useState('Choose File');
 
     const onChange = e => {
         setFile(e.target.files[0]);
-        setFilename(e.target.files[0].name);
+        // setFilename(e.target.files[0].name);
     };
 
     const onSubmit = async e => {
@@ -118,7 +120,7 @@ const DashboardNewProduct = () =>{
         console.log("Submit");
         
         const formData = new FormData();
-        formData.append('file', file);
+        formData.append('image', file);
 
         try {
 
@@ -130,7 +132,7 @@ const DashboardNewProduct = () =>{
 
             const image_url = res.data.filePath;
             const product = { ...inputs, img: image_url };
-            addProduct(product, dispatch);
+            addProduct(product, dispatch, navigate);
             
 
         }catch(err){
@@ -148,7 +150,7 @@ const DashboardNewProduct = () =>{
                     <form onSubmit={onSubmit}>
                         <SingleInputText>
                             <TextInput>Слика на производот</TextInput>
-                            <InputFile type="file" placeholder="Јајца и млеко" onChange={onChange} />
+                            <InputFile accept="image/*" type="file" placeholder="Јајца и млеко" onChange={onChange} />
                         </SingleInputText>
                         <SingleInputText>
                             <TextInput>Име на производот <b>(печатно)</b></TextInput>

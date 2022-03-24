@@ -5,7 +5,7 @@ import MainMoreIcon from "../icons/more.png";
 import ReactPaginate from "react-paginate";
 import "../css/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getProducts } from "../redux/apiCalls";
+import { getCategories, getProducts } from "../redux/apiCalls";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import DeleteProductModal from "./DeleteProductModal";
@@ -161,46 +161,21 @@ const ButtonClickMore = styled.button`
     cursor:pointer;
 `;
 
-const DashboardProducts = () =>{
-    const [searchProduct, setSearchProduct] = useState('');
-
-    const navigate = useNavigate();
-    const {
-        name = 'all',
-        pageNumber = 1, 
-    } = useParams();
-
+const DashboardCategories = () =>{
     const dispatch = useDispatch();
-    const products = useSelector((state) => state.product.products);
-    const pages = useSelector((state) => state.product.pages);
-
+ 
+    
     useEffect(() => {
-        dispatch( 
-            getProducts({
-              pageNumber,
-              name: name !== 'all' ? name : '',
-            })
-        );  
-    }, [dispatch, name, pageNumber]); 
-
-    const handlePageClick = async (data) => {
-        // setPageNumber(data.selected + 1); 
-        const _page = data.selected + 1;
-        navigate(`/products/name/all/pageNumber/${_page}`);
-        // console.log(data.selected);
-        // scroll to the top
-        //window.scrollTo(0, 0)
-    };
+        getCategories(dispatch);
+    }, [dispatch]); 
     
-    const handleClickSearch = () => {
-        if(searchProduct !== '' && searchProduct !== undefined){
-            navigate(`/products/name/${searchProduct}/pageNumber/1`);
-        }
-    };
-    const [productDeleteId, setProductDeleteId] = useState(null);
+    const categories = useSelector((state) => state.categories.categories); 
+    const isFetching = useSelector((state) => state.categories.isFetching);
     
-    const handleDeleteProduct = (_productId) => {
-        setProductDeleteId(_productId);
+    const [categoryDeleteId, setCategoryDeleteId] = useState(null);
+    
+    const handleDeleteCategory = (_categoryId) => {
+        setCategoryDeleteId(_categoryId);
     }
 
     return (<> 
@@ -218,12 +193,7 @@ const DashboardProducts = () =>{
                             <Tttext>Додади нов <b>+</b></Tttext>
                         </InfoMainTwo> 
                     </Link>
-                </InfoTtt> 
-
-                <InputSearchProduct>    
-                    <InputSearch placeholder="Пребарај продукт..." onChange={(e)=>setSearchProduct(e.target.value)}  defaultValue={name !=='all' ? name : '' }/>
-                    <ButtonSearch onClick={handleClickSearch}>Пребарај</ButtonSearch>
-                </InputSearchProduct>
+                </InfoTtt>  
 
                 <LoadProductsHere>
                     <InsideProducts>    
@@ -276,31 +246,22 @@ const DashboardProducts = () =>{
                             </SingleTableHeader>  
                         </TableHeader>
 
-                        {products.map((product) => (
-                        <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}>
-                            <SingleTableHeader style={{width:"200px", marginRight:"20px"}}>
-                                <ProductImg src={product.img}></ProductImg>
-                            </SingleTableHeader>
+                        {categories.map((category) => (
+                        <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}> 
                             <SingleTableHeader style={{width:"80%"}}>
-                                <TableHeaderText>{product._id}</TableHeaderText>
-                            </SingleTableHeader>
-                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
-                                <TableHeaderText>23 јуни 2022 во 19:40ч</TableHeaderText>
-                            </SingleTableHeader>
+                                <TableHeaderText>{category._id}</TableHeaderText>
+                            </SingleTableHeader> 
                             <SingleTableHeader style={{width:"90%"}}>
-                                <TableHeaderText>{product.title}</TableHeaderText>
-                            </SingleTableHeader>
-                            <SingleTableHeader style={{width:"40%"}}>
-                                <TableHeaderText>{product.price} ден.</TableHeaderText>
-                            </SingleTableHeader>
+                                <TableHeaderText>{category.category_name}</TableHeaderText>
+                            </SingleTableHeader> 
                             <SingleTableHeader  style={{width:"30%"}}>  
                                 <TableHeaderText>
-                                    <ButtonDelete onClick={() => handleDeleteProduct(product._id)}>Избриши</ButtonDelete>
+                                    <ButtonDelete onClick={() => handleDeleteCategory(category._id)}>Избриши</ButtonDelete>
                                 </TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
                                 <TableHeaderText>
-                                    <Link to={`/product/${product._id}`}>
+                                    <Link to={`/product/${category._id}`}>
                                         <MoreIcon src={MainMoreIcon}/> 
                                     </Link>
                                 </TableHeaderText>
@@ -311,26 +272,7 @@ const DashboardProducts = () =>{
 
                     </InsideProducts>
                 </LoadProductsHere>
-                <ReactPaginate
-                    previousLabel={"<"}
-                    nextLabel={">"}
-                    breakLabel={"..."}
-                    pageCount={pages} 
-                    forcePage={pageNumber-1}
-                    marginPagesDisplayed={2}
-                    pageRangeDisplayed={3}
-                    onPageChange={handlePageClick}
-                    containerClassName={"pagination justify-content-center"}
-                    pageClassName={"page-item"}
-                    pageLinkClassName={"page-link"}
-                    previousClassName={"page-item prev-item-d"}
-                    previousLinkClassName={"page-link"}
-                    nextClassName={"page-item next-item-d"}
-                    nextLinkClassName={"page-link"}
-                    breakClassName={"page-item"}
-                    breakLinkClassName={"page-link"}
-                    activeClassName={"active"}
-                /> 
+               
 
             </DashboardProductsRightInside>
 
@@ -339,11 +281,11 @@ const DashboardProducts = () =>{
         </DashboardProductsRight>
         
         
-        {productDeleteId && (<>
+        {/* {productDeleteId && (<>
             <DeleteProductModal productDeleteId={productDeleteId} setProductDeleteId={setProductDeleteId} /> 
-        </>)}
+        </>)} */}
 
     </>)
 }
 
-export default DashboardProducts;
+export default DashboardCategories;

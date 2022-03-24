@@ -82,6 +82,7 @@ const InputFile = styled.input `
 `;
 
 const DashboardProduct = () =>{
+    const navigate = useNavigate();
     
     const {
         id = 0
@@ -148,11 +149,11 @@ const DashboardProduct = () =>{
 
                 const image_url = res.data.filePath;
                 const _product = { ...inputs, img: image_url };
-                updateProduct(id, _product, dispatch);
+                updateProduct(id, _product, dispatch, navigate);
             }else{
 
                 const _product = { ...inputs };
-                updateProduct(id, _product, dispatch);
+                updateProduct(id, _product, dispatch, navigate);
             }
             
 
@@ -229,7 +230,7 @@ const DashboardProduct = () =>{
                             </select>
                         </SingleInputText>
 
-                    <ButtonPublishProdut>Објави</ButtonPublishProdut>
+                    <ButtonPublishProdut>Измени</ButtonPublishProdut>
                     </form>
 
                     
