@@ -107,12 +107,12 @@ const DashboardNewProduct = () =>{
         });
     };
     
-    const [file, setFile] = useState();
-    // const [filename, setFilename] = useState('Choose File');
+    const [file, setFile] = useState('');
+    const [filename, setFilename] = useState('Choose File');
 
     const onChange = e => {
         setFile(e.target.files[0]);
-        // setFilename(e.target.files[0].name);
+        setFilename(e.target.files[0].name);
     };
 
     const onSubmit = async e => {
@@ -120,7 +120,7 @@ const DashboardNewProduct = () =>{
         console.log("Submit");
         
         const formData = new FormData();
-        formData.append('image', file);
+        formData.append('file', file);
 
         try {
 
@@ -150,7 +150,7 @@ const DashboardNewProduct = () =>{
                     <form onSubmit={onSubmit}>
                         <SingleInputText>
                             <TextInput>Слика на производот</TextInput>
-                            <InputFile accept="image/*" type="file" placeholder="Јајца и млеко" onChange={onChange} />
+                            <InputFile type="file" placeholder="Јајца и млеко" onChange={onChange} />
                         </SingleInputText>
                         <SingleInputText>
                             <TextInput>Име на производот <b>(печатно)</b></TextInput>
