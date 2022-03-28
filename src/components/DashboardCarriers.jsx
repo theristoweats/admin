@@ -6,10 +6,11 @@ import MainMoreIcon from "../icons/more.png";
 import ReactPaginate from "react-paginate";
 import "../css/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories, getProducts } from "../redux/apiCalls";
+import { getCarriers, getCategories, getProducts } from "../redux/apiCalls";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import DeleteCategoryModal from "./DeleteCategoryModal";
+import DeleteCarrierModal from "./DeleteCarrierModal";
+import TrolleyIcon from "../icons/trolley.png";
 
 const DashboardProductsRight = styled.div`
     margin-left:60px;
@@ -162,21 +163,21 @@ const ButtonClickMore = styled.button`
     cursor:pointer;
 `;
 
-const DashboardCategories = () =>{
+const DashboardCarriers = () =>{
     const dispatch = useDispatch();
  
     
     useEffect(() => {
-        getCategories(dispatch);
+        getCarriers(dispatch);
     }, [dispatch]); 
     
-    const categories = useSelector((state) => state.categories.categories); 
-    const isFetching = useSelector((state) => state.categories.isFetching);
+    const carriers = useSelector((state) => state.carriers.carriers); 
+    const isFetching = useSelector((state) => state.carriers.isFetching);
     
-    const [categoryDeleteId, setCategoryDeleteId] = useState(null);
+    const [carrierDeleteId, setCarrierDeleteId] = useState(null);
     
-    const handleDeleteCategory = (_categoryId) => {
-        setCategoryDeleteId(_categoryId);
+    const handleDeleteCarrier = (_carrerId) => {
+        setCarrierDeleteId(_carrerId);
     }
 
     return (<> 
@@ -185,13 +186,13 @@ const DashboardCategories = () =>{
             <DashboardProductsRightInside>
                 <InfoTtt>
                     <InfoMainTtt>
-                        <IconLop src={StructureIcon}/>
-                        <TextInfoTtt>Категории</TextInfoTtt>
+                        <IconLop src={TrolleyIcon}/>
+                        <TextInfoTtt>Доставувачи</TextInfoTtt>
                     </InfoMainTtt>
 
-                    <Link to="/newcategory" style={{textDecoration:"none"}}>
+                    <Link to="/newcarrier" style={{textDecoration:"none"}}>
                         <InfoMainTwo>
-                            <Tttext>Додади нова <b>+</b></Tttext>
+                            <Tttext>Додади нов <b>+</b></Tttext>
                         </InfoMainTwo> 
                     </Link>
                 </InfoTtt>  
@@ -239,22 +240,22 @@ const DashboardCategories = () =>{
                             </SingleTableHeader>  
                         </TableHeader>
 
-                        {categories.map((category) => (
+                        {carriers.map((carrier) => (
                         <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}> 
                             <SingleTableHeader style={{width:"80%"}}>
-                                <TableHeaderText>{category._id}</TableHeaderText>
+                                <TableHeaderText>{carrier._id}</TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader style={{width:"90%"}}>
-                                <TableHeaderText>{category.category_name}</TableHeaderText>
+                                <TableHeaderText>{carrier.fullname}</TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader  style={{width:"30%"}}>  
                                 <TableHeaderText>
-                                    <ButtonDelete onClick={() => handleDeleteCategory(category._id)}>Избриши</ButtonDelete>
+                                    <ButtonDelete onClick={() => handleDeleteCarrier(carrier._id)}>Избриши</ButtonDelete>
                                 </TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
                                 <TableHeaderText>
-                                    <Link to={`/category/${category._id}`}>
+                                    <Link to={`/carrier/${carrier._id}`}>
                                         <MoreIcon src={MainMoreIcon}/> 
                                     </Link>
                                 </TableHeaderText>
@@ -274,12 +275,12 @@ const DashboardCategories = () =>{
         </DashboardProductsRight>
         
         
-        {categoryDeleteId && (<>
-            <DeleteCategoryModal categoryDeleteId={categoryDeleteId} setCategoryDeleteId={setCategoryDeleteId} /> 
+        {carrierDeleteId && (<>
+            <DeleteCarrierModal carrierDeleteId={carrierDeleteId} setCarrierDeleteId={setCarrierDeleteId} /> 
         </>)}
 
 
     </>)
 }
 
-export default DashboardCategories;
+export default DashboardCarriers;

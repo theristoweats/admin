@@ -27,8 +27,8 @@ export const CategorySlice = createSlice({
     },
     deleteCategorySuccess: (state, action) => {
       state.isFetching = false;
-      state.category.splice(
-        state.category.findIndex((item) => item._id === action.payload),1
+      state.categories.splice(
+        state.categories.findIndex((item) => item._id === action.payload),1
       );
     },
     deleteCategoryFailure: (state) => {

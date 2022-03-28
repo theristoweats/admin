@@ -13,11 +13,6 @@ import DeleteCarrierModal from "./DeleteCarrierModal";
 import TrolleyIcon from "../icons/trolley.png";
 import iconSelMenu from "../icons/down.png";
 import "../css/style.css";
-import DashboardIcon from "../icons/dashboard-white.png";
-import ShoppingBag from "../icons/shopping-bag-delivered.png";
-import DollarIcon from "../icons/dollar.png";
-import PeopleIcon from "../icons/people.png";
-import { publicRequest, userRequest } from "../requestMethods";
 
 const DashboardProductsRight = styled.div`
     margin-left:60px;
@@ -224,79 +219,7 @@ const Input = styled.input`
     background-color: #353637;
 `;
 
-const DashboardStatisticLoad = styled.div`
-    display:flex;
-    margin-top:50px;
-`;
-
-const DashboardStatisticLeft = styled.div`
-    width: 100%;
-    display: flex; 
-    flex-direction:column;
-`;
-
-const DashboardFirstStatistic = styled.div`
-    display:flex;
-`;
-
-const DashboardStatisticRight = styled.div`
-    // width: 50%;
-    display: flex;
-    flex-direction: column;
-`;
-
-
-
-const SingleBoxStatistics = styled.div`
-    width: 100%;
-    border-radius: 10px;
-    background-color: #242526;
-    margin-right: 10px;
-`;
-
-const BoxInsideStatisitc = styled.div`
-    padding: 20px;
-    display: flex;
-    flex-direction: column; 
-`;
-
-const IconBoxStatistic = styled.div`
-    width: 25px;
-    height: 25px;
-    padding: 10px;
-    border-radius: 50%;
-`;
-
-const IconStatistic = styled.img`
-    width: 24px;
-    height: 24px;
-`;
-
-const CountStatisticHere = styled.div`
-    display: flex;
-    flex-direction: column;  
-    flex: 1;
-    margin-top: 15px;
-`;
-
-const StatisticNumber = styled.span`
-    color: white;
-    font-weight: bold;
-    font-size: 35px;
-    font-family:GilroyLight;
-`;
-
-
-const StatisticText = styled.span`
-    font-size: 15px;
-    color: #acacac;
-    margin-top: 5px;
-    font-family:GilroyLight;
-`;
-
-const DashboarHome = () =>{
-
-    const [statistics, setStatistics] = useState();
+const DashboardOrders = () =>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
  
@@ -306,18 +229,11 @@ const DashboarHome = () =>{
     } = useParams();
 
     useEffect(() => {
-        const getStatistics = async (___filter, ___date) => { 
-            console.log("hii");
-            try {
-              const res = await publicRequest.get(`/admin/statisitc?filter=${___filter}&date=${___date}`);
-              setStatistics(res.data);
-            } catch (err) {
-              // console.log(err)
-            }
-        };
-        getStatistics(filter, date);
+        getOrders(dispatch, filter, date);
     }, [dispatch, filter, date]); 
-     
+    
+    const orders = useSelector((state) => state.orders.orders); 
+    const isFetching = useSelector((state) => state.orders.isFetching);
 
     return (<> 
         <DashboardProductsRight>
@@ -325,24 +241,24 @@ const DashboarHome = () =>{
             <DashboardProductsRightInside>
                 <InfoTtt>
                     <InfoMainTtt>
-                        <IconLop src={DashboardIcon}/>
-                        <TextInfoTtt>Админ панел</TextInfoTtt>
+                        <IconLop src={TrolleyIcon}/>
+                        <TextInfoTtt>Нарачки</TextInfoTtt>
                     </InfoMainTtt>
 
                     <ChooseProductsType>
-                        <ChooseSpan>Статистика:</ChooseSpan>                                              
+                        {/* <ChooseSpan>Филтрирај ден:</ChooseSpan>                                               */}
                         <SelectedMenuPro>
                             <select 
                                 value={filter}
                                 onChange={(e) => {
-                                    navigate(`/filter/${e.target.value}`);
+                                    navigate(`/orders/filter/${e.target.value}`);
                                 }}
                                 className="select-pro-bro"
                             >
-                                <option value="today">Денешна</option>
-                                <option value="lastday">Синоќешна</option>
+                                <option value="today">Денешни</option>
+                                <option value="lastday">Синоќешни</option>
                                 <option value="choose_date">Избери дата</option>
-                                <option value="all">Севкупна</option>
+                                <option value="all">Сите</option>
                             </select>
                             <IconsFlexPr>
                                 <IconSelectMenu src={iconSelMenu}></IconSelectMenu>
@@ -352,7 +268,7 @@ const DashboarHome = () =>{
                     {filter === "choose_date" &&
                     <ChooseProductsType> 
                         <Input type="date" value={date} onChange={(e) => {
-                                    navigate(`/filter/choose_date/date/${e.target.value}`);
+                                    navigate(`/orders/filter/choose_date/date/${e.target.value}`);
                                 }}/>
                     </ChooseProductsType> }
                     {/* <Link to="/newcarrier" style={{textDecoration:"none"}}>
@@ -361,56 +277,86 @@ const DashboarHome = () =>{
                         </InfoMainTwo> 
                     </Link> */}
                 </InfoTtt>  
-   
+
+                <LoadProductsHere>
+                    <InsideProducts>    
+                        {/* <TableHeader>
+                            <SingleTableHeader style={{width:"300px", marginRight:"20px"}}>
+                                <TableHeaderText></TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"90%"}}>
+                                <TableHeaderText>Број</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
+                                <TableHeaderText>Додадена</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{}}>
+                                <TableHeaderText>Име</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"40%"}}>
+                                <TableHeaderText>Цена</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"30%"}}>
+                                <TableHeaderText></TableHeaderText>
+                            </SingleTableHeader> 
+                            <SingleTableHeader style={{width:"30%"}}>
+                                <TableHeaderText></TableHeaderText>
+                            </SingleTableHeader>  
+                        </TableHeader> */}
+
+                        <TableHeader >
+                        <SingleTableHeader style={{width:"80%"}}>
+                                <TableHeaderText>Број</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader style={{width:"60%"}}>
+                                <TableHeaderText>Доставувач</TableHeaderText>
+                            </SingleTableHeader>   
+                            <SingleTableHeader style={{width:"80%"}}>
+                                <TableHeaderText>Време</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader style={{width:"60%"}}>
+                                <TableHeaderText>Износ</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader style={{width:"40%"}}>
+                                <TableHeaderText>Статус</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
+                                <TableHeaderText> 
+                                </TableHeaderText>
+                            </SingleTableHeader>  
+                        </TableHeader>
+
+                        {orders.map((order) => (
+                        <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}> 
+                            <SingleTableHeader style={{width:"80%"}}>
+                                <TableHeaderText>{order._id}</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader style={{width:"60%"}}>
+                                <TableHeaderText>{order.carrierName}</TableHeaderText>
+                            </SingleTableHeader>   
+                            <SingleTableHeader style={{width:"80%"}}>
+                                <TableHeaderText>{order.time}</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader style={{width:"60%"}}>
+                                <TableHeaderText>{order.amount} ден.</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader style={{width:"40%"}}>
+                                <TableHeaderText>{order.orderStatus}</TableHeaderText>
+                            </SingleTableHeader>  
+                            <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
+                                <TableHeaderText>
+                                    <Link to={`/order/${order._id}`}>
+                                        <MoreIcon src={MainMoreIcon}/> 
+                                    </Link>
+                                </TableHeaderText>
+                            </SingleTableHeader>  
+                        </TableHeader>
+                        ))}
+                        
+
+                    </InsideProducts>
+                </LoadProductsHere>
                
-                <DashboardStatisticLoad>
-
-                    <DashboardStatisticLeft>
-                        <DashboardFirstStatistic>
-                            <SingleBoxStatistics style={{borderTop:"5px solid #e41e3f"}}>
-                                <BoxInsideStatisitc>
-                                    <IconBoxStatistic style={{backgroundColor:"#e41e3f"}}>
-                                        <IconStatistic src={ShoppingBag}/>
-                                    </IconBoxStatistic>
-                                    <CountStatisticHere>
-                                        <StatisticNumber>{statistics && statistics.orders}</StatisticNumber>
-                                        <StatisticText>Нарачки</StatisticText>
-                                    </CountStatisticHere>
-                                </BoxInsideStatisitc>
-                            </SingleBoxStatistics>
-
-                            
-                            <SingleBoxStatistics style={{borderTop:"5px solid #16783f"}}>
-                                <BoxInsideStatisitc>
-                                    <IconBoxStatistic style={{backgroundColor:"#16783f"}}>
-                                        <IconStatistic src={DollarIcon}/>
-                                    </IconBoxStatistic>
-                                    <CountStatisticHere>
-                                        <StatisticNumber>{statistics && statistics.revenue} ден.</StatisticNumber>
-                                        <StatisticText>Заработка</StatisticText>
-                                    </CountStatisticHere>
-                                </BoxInsideStatisitc>
-                            </SingleBoxStatistics>
-                            
-                            <SingleBoxStatistics style={{borderTop:"5px solid #4151d9"}}>
-                                <BoxInsideStatisitc>
-                                    <IconBoxStatistic style={{backgroundColor:"#4151d9"}}>
-                                        <IconStatistic src={PeopleIcon}/>
-                                    </IconBoxStatistic>
-                                    <CountStatisticHere>
-                                        <StatisticNumber>{statistics && statistics.users}</StatisticNumber>
-                                        <StatisticText>Нови корисници</StatisticText>
-                                    </CountStatisticHere>
-                                </BoxInsideStatisitc>
-                            </SingleBoxStatistics>
-                        </DashboardFirstStatistic>
-
-
-                    </DashboardStatisticLeft>
-
-                    <DashboardStatisticRight></DashboardStatisticRight>
-
-                </DashboardStatisticLoad>
 
             </DashboardProductsRightInside>
 
@@ -422,4 +368,4 @@ const DashboarHome = () =>{
     </>)
 }
 
-export default DashboarHome;
+export default DashboardOrders;

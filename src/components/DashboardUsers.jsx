@@ -1,15 +1,14 @@
 import styled from "styled-components"; 
 import OpenBoxIcon from "../icons/open-box.png";
-import StructureIcon from "../icons/structure.png";
 import ExampleProducct from "../icons/pepsi.png";
 import MainMoreIcon from "../icons/more.png";
 import ReactPaginate from "react-paginate";
 import "../css/style.css";
 import { useDispatch, useSelector } from "react-redux";
-import { getCategories, getProducts } from "../redux/apiCalls";
+import { getProducts, getUsers } from "../redux/apiCalls";
 import { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import DeleteCategoryModal from "./DeleteCategoryModal";
+import DeleteUserModal from "./DeleteUserModal";
 
 const DashboardProductsRight = styled.div`
     margin-left:60px;
@@ -162,21 +161,46 @@ const ButtonClickMore = styled.button`
     cursor:pointer;
 `;
 
-const DashboardCategories = () =>{
+const DashboardUsers = () =>{
+    const [searchProduct, setSearchProduct] = useState('');
+
+    const navigate = useNavigate();
+    const {
+        name = 'all',
+        pageNumber = 1, 
+    } = useParams();
+
     const dispatch = useDispatch();
- 
-    
+    const users = useSelector((state) => state.users.users);
+    const pages = useSelector((state) => state.users.pages);
+
     useEffect(() => {
-        getCategories(dispatch);
-    }, [dispatch]); 
+        dispatch( 
+            getUsers({
+              pageNumber,
+              name: name !== 'all' ? name : '',
+            })
+        );  
+    }, [dispatch, name, pageNumber]); 
+
+    const handlePageClick = async (data) => {
+        // setPageNumber(data.selected + 1); 
+        const _page = data.selected + 1;
+        navigate(`/users/name/all/pageNumber/${_page}`);
+        // console.log(data.selected);
+        // scroll to the top
+        //window.scrollTo(0, 0)
+    };
     
-    const categories = useSelector((state) => state.categories.categories); 
-    const isFetching = useSelector((state) => state.categories.isFetching);
+    const handleClickSearch = () => {
+        if(searchProduct !== '' && searchProduct !== undefined){
+            navigate(`/users/name/${searchProduct}/pageNumber/1`);
+        }
+    };
+    const [userDeleteId, setUserDeleteId] = useState(null);
     
-    const [categoryDeleteId, setCategoryDeleteId] = useState(null);
-    
-    const handleDeleteCategory = (_categoryId) => {
-        setCategoryDeleteId(_categoryId);
+    const handleDeleteUser = (_productId) => {
+        setUserDeleteId(_productId);
     }
 
     return (<> 
@@ -185,16 +209,16 @@ const DashboardCategories = () =>{
             <DashboardProductsRightInside>
                 <InfoTtt>
                     <InfoMainTtt>
-                        <IconLop src={StructureIcon}/>
-                        <TextInfoTtt>Категории</TextInfoTtt>
+                        <IconLop src={OpenBoxIcon}/>
+                        <TextInfoTtt>Корисници</TextInfoTtt>
                     </InfoMainTtt>
+ 
+                </InfoTtt> 
 
-                    <Link to="/newcategory" style={{textDecoration:"none"}}>
-                        <InfoMainTwo>
-                            <Tttext>Додади нова <b>+</b></Tttext>
-                        </InfoMainTwo> 
-                    </Link>
-                </InfoTtt>  
+                <InputSearchProduct>    
+                    <InputSearch placeholder="Пребарај корисник..." onChange={(e)=>setSearchProduct(e.target.value)}  defaultValue={name !=='all' ? name : '' }/>
+                    <ButtonSearch onClick={handleClickSearch}>Пребарај</ButtonSearch>
+                </InputSearchProduct>
 
                 <LoadProductsHere>
                     <InsideProducts>    
@@ -223,40 +247,43 @@ const DashboardCategories = () =>{
                         </TableHeader> */}
 
                         <TableHeader >
+            
                             <SingleTableHeader style={{width:"80%"}}>
                                 <TableHeaderText>Број</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
+                                <TableHeaderText>Регистриран</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"60%"}}>
+                                <TableHeaderText>Име</TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader style={{width:"90%"}}>
-                                <TableHeaderText>Име</TableHeaderText>
+                                <TableHeaderText>Емајл</TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader  style={{width:"30%"}}>  
                                 <TableHeaderText>
-                                </TableHeaderText>
-                            </SingleTableHeader> 
-                            <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
-                                <TableHeaderText> 
                                 </TableHeaderText>
                             </SingleTableHeader>  
                         </TableHeader>
 
-                        {categories.map((category) => (
-                        <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}> 
+                        {users.map((user) => (
+                        <TableHeader style={{paddingTop:"10px",paddingBottom:"10px"}}>
+                      
                             <SingleTableHeader style={{width:"80%"}}>
-                                <TableHeaderText>{category._id}</TableHeaderText>
+                                <TableHeaderText>{user._id}</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"50%", marginRight:"5%"}}>
+                                <TableHeaderText>23 јуни 2022 во 19:40ч</TableHeaderText>
+                            </SingleTableHeader>
+                            <SingleTableHeader style={{width:"60%"}}>
+                                <TableHeaderText>{user.fullname}</TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader style={{width:"90%"}}>
-                                <TableHeaderText>{category.category_name}</TableHeaderText>
+                                <TableHeaderText>{user.email}</TableHeaderText>
                             </SingleTableHeader> 
                             <SingleTableHeader  style={{width:"30%"}}>  
                                 <TableHeaderText>
-                                    <ButtonDelete onClick={() => handleDeleteCategory(category._id)}>Избриши</ButtonDelete>
-                                </TableHeaderText>
-                            </SingleTableHeader> 
-                            <SingleTableHeader  style={{width:"30%", justifyContent:"flex-end", alignItems:"flex-end"}}>
-                                <TableHeaderText>
-                                    <Link to={`/category/${category._id}`}>
-                                        <MoreIcon src={MainMoreIcon}/> 
-                                    </Link>
+                                    <ButtonDelete onClick={() => handleDeleteUser(user._id)}>Избриши</ButtonDelete>
                                 </TableHeaderText>
                             </SingleTableHeader>  
                         </TableHeader>
@@ -265,7 +292,26 @@ const DashboardCategories = () =>{
 
                     </InsideProducts>
                 </LoadProductsHere>
-               
+                <ReactPaginate
+                    previousLabel={"<"}
+                    nextLabel={">"}
+                    breakLabel={"..."}
+                    pageCount={pages} 
+                    forcePage={pageNumber-1}
+                    marginPagesDisplayed={2}
+                    pageRangeDisplayed={3}
+                    onPageChange={handlePageClick}
+                    containerClassName={"pagination justify-content-center"}
+                    pageClassName={"page-item"}
+                    pageLinkClassName={"page-link"}
+                    previousClassName={"page-item prev-item-d"}
+                    previousLinkClassName={"page-link"}
+                    nextClassName={"page-item next-item-d"}
+                    nextLinkClassName={"page-link"}
+                    breakClassName={"page-item"}
+                    breakLinkClassName={"page-link"}
+                    activeClassName={"active"}
+                /> 
 
             </DashboardProductsRightInside>
 
@@ -274,12 +320,11 @@ const DashboardCategories = () =>{
         </DashboardProductsRight>
         
         
-        {categoryDeleteId && (<>
-            <DeleteCategoryModal categoryDeleteId={categoryDeleteId} setCategoryDeleteId={setCategoryDeleteId} /> 
+        {userDeleteId && (<>
+            <DeleteUserModal userDeleteId={userDeleteId} setUserDeleteId={setUserDeleteId} /> 
         </>)}
-
 
     </>)
 }
 
-export default DashboardCategories;
+export default DashboardUsers;
