@@ -309,7 +309,7 @@ const DashboarHome = () =>{
         const getStatistics = async (___filter, ___date) => { 
             console.log("hii");
             try {
-              const res = await publicRequest.get(`/admin/statisitc?filter=${___filter}&date=${___date}`);
+              const res = await userRequest.get(`/admin/statisitc?filter=${___filter}&date=${___date}`);
               setStatistics(res.data);
             } catch (err) {
               // console.log(err)

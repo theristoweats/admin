@@ -66,7 +66,7 @@ import {
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
   try {
-    const res = await publicRequest.post("/auth/login", user);
+    const res = await publicRequest.post("/admin/login", user);
     dispatch(loginSuccess(res.data));
   } catch (err) {
     dispatch(loginFailure());
@@ -83,7 +83,7 @@ export const getProducts =
   dispatch(getProductStart());
   try {
     // const res = await publicRequest.get("/products/admin");
-    const { data } = await publicRequest.get(
+    const { data } = await userRequest.get(
       `/products/admin?pageNumber=${pageNumber}&name=${name}`
     );
     console.log(data);
@@ -136,7 +136,7 @@ export const getCategories = async (dispatch) => {
   console.log("hii");
   dispatch(getCategoryStart());
   try {
-    const res = await publicRequest.get("/categories");
+    const res = await userRequest.get("/categories");
     console.log(res);
     dispatch(getCategorySuccess(res.data));
   } catch (err) {
@@ -191,7 +191,7 @@ export const getUsers =
   dispatch(getUsersStart());
   try {
     // const res = await publicRequest.get("/products/admin");
-    const { data } = await publicRequest.get(
+    const { data } = await userRequest.get(
       `/admin/users?pageNumber=${pageNumber}&name=${name}`
     );
     console.log(data);
@@ -220,7 +220,7 @@ export const getCarriers = async (dispatch) => {
   console.log("hii");
   dispatch(getCarriersStart());
   try {
-    const res = await publicRequest.get("/admin/carriers");
+    const res = await userRequest.get("/admin/carriers");
     console.log(res);
     dispatch(getCarriersSuccess(res.data));
   } catch (err) {
@@ -272,7 +272,7 @@ export const getOrders = async (dispatch, filter, date) => {
   console.log("hii");
   dispatch(getOrdersStart());
   try {
-    const res = await publicRequest.get(`/admin/orders?filter=${filter}&date=${date}`);
+    const res = await userRequest.get(`/admin/orders?filter=${filter}&date=${date}`);
     console.log(res);
     dispatch(getOrdersSuccess(res.data));
   } catch (err) {
