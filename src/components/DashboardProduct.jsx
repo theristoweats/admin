@@ -213,6 +213,15 @@ const DashboardProduct = () =>{
                         </SingleInputText>
 
                         <SingleInputText>
+                            <TextInput>Transform</TextInput>
+                            <Input 
+                                type="text" 
+                                placeholder="1.5"
+                                name="transform"
+                                onChange={handleChange} />
+                        </SingleInputText>
+
+                        <SingleInputText>
                             <TextInput>Категорија</TextInput>
                             <select
                                 // value={order}
