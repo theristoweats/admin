@@ -194,7 +194,7 @@ const DashboardNewProduct = () =>{
                         <SingleInputText>
                             <TextInput>Transform</TextInput>
                             <Input 
-                                type="number" 
+                                type="text" 
                                 placeholder="1.5"
                                 name="transform"
                                 onChange={handleChange} />
