@@ -190,6 +190,16 @@ const DashboardNewProduct = () =>{
                                 onChange={handleChange} />
                         </SingleInputText>
 
+                        
+                        <SingleInputText>
+                            <TextInput>Transform</TextInput>
+                            <Input 
+                                type="number" 
+                                placeholder="1.5"
+                                name="transform"
+                                onChange={handleChange} />
+                        </SingleInputText>
+
                         <SingleInputText>
                             <TextInput>Категорија</TextInput>
                             <select

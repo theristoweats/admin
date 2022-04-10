@@ -343,7 +343,7 @@ const DashboardProducts = () =>{
             <DeleteProductModal productDeleteId={productDeleteId} setProductDeleteId={setProductDeleteId} /> 
         </>)}
 
-    </>)
+    </>) 
 }
 
 export default DashboardProducts;
