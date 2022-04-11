@@ -151,7 +151,7 @@ const DashboardNewProduct = () =>{
                     <form onSubmit={onSubmit}>
                         <SingleInputText>
                             <TextInput>Слика на производот</TextInput>
-                            <InputFile accept="image/*" type="file" placeholder="Јајца и млеко" onChange={onChange} />
+                            <InputFile accept="image/*" type="file" placeholder="Јајца и млеко" onChange={onChange}  required/>
                         </SingleInputText>
                         <SingleInputText>
                             <TextInput>Име на производот <b>(печатно)</b></TextInput>
@@ -160,6 +160,7 @@ const DashboardNewProduct = () =>{
                                 placeholder="Јајца и млеко"
                                 name="title"
                                 onChange={handleChange}
+                                required
                                 />
                         </SingleInputText>
                         
@@ -169,6 +170,7 @@ const DashboardNewProduct = () =>{
                                 type="text" 
                                 placeholder="Jajca i mleko"
                                 name="title_en"
+                                required
                                 onChange={handleChange} />
                         </SingleInputText>
                         
@@ -178,6 +180,7 @@ const DashboardNewProduct = () =>{
                                 type="text" 
                                 placeholder="jajca-i-mleko"
                                 name="title_url"
+                                required
                                 onChange={handleChange} />
                         </SingleInputText> 
                         
@@ -187,6 +190,7 @@ const DashboardNewProduct = () =>{
                                 type="number" 
                                 placeholder="485"
                                 name="price"
+                                required
                                 onChange={handleChange} />
                         </SingleInputText>
 
@@ -197,6 +201,7 @@ const DashboardNewProduct = () =>{
                                 type="text" 
                                 placeholder="1.5"
                                 name="transform"
+                                required
                                 onChange={handleChange} />
                         </SingleInputText>
 
@@ -209,6 +214,7 @@ const DashboardNewProduct = () =>{
                                 // }}
                                 name="categories"
                                 className="select-pro-bro"
+                                required
                                 onChange={handleChange}
                             >
                                 
